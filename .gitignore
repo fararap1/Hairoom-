@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# ROS2 / colcon
+build/
+install/
+log/
+
+# External Fairino repositories cloned into the ROS2 workspace
+src/frcobot_ros2/
+src/fairino-cpp-sdk/
+src/frcobot_cpp_sdk/
+
+# Local editor and OS files
+.DS_Store
+.vscode/
+.idea/
