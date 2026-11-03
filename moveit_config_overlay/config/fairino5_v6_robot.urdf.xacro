@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="fairino5_v6_robot">
+    <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
+
+    <!-- Import fairino5_v6_robot urdf file -->
+    <xacro:include filename="$(find fairino_description)/urdf/fairino5_v6.urdf" />
+
+    <!-- Import control_xacro -->
+    <xacro:include filename="fairino5_v6_robot.ros2_control.xacro" />
+
+    <!-- HAIROOM LOCAL MOD 2026-07-21: temporary tool (cylinder) as a real
+         URDF link + tcp_tool tip frame, fixed to wrist3_link. See
+         hairoom_tool.xacro for the tool geometry/properties and how +Z was
+         verified as the flange/tool axis (not assumed). -->
+    <xacro:include filename="hairoom_tool.xacro" />
+
+    <xacro:fairino5_v6_robot_ros2_control name="FakeSystem" initial_positions_file="$(arg initial_positions_file)"/>
+
+</robot>

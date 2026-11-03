@@ -1,0 +1,45 @@
+note: Points taken out of service, NOT deleted. Same format and same frame as head_landmarks.yaml
+  -- paste an entry back into its `landmarks:` list to restore it.
+frame_id: head_link
+retired:
+- names: [+M, +O, M, O]
+  when: '2026-07-23T10:14:23'
+  why: 'M: every collision-free elbow-up IK puts wrist2_link inside the sink (44/80
+    seeds, contact sink<->wrist2_link, never the head). O: mirror of M, kept out with
+    it at the operator''s request.'
+- names: [+N]
+  when: '2026-07-23T10:16:42'
+  why: 'Approach points parked at the operator''s request, temporarily. No collision-free
+    elbow-up IK at 100 mm out: the offset takes them down and back toward the sink.
+    A shorter offset may bring them back -- regenerate with make_offset_points.py.'
+landmarks:
+- name: M
+  region: scalp
+  position: [-0.04217, -0.00425, -0.08364]
+  orientation: [0.284592, 0.260114, 0.62249, 0.681069]
+  standoff: 0.0
+  tools: []
+- name: O
+  region: scalp
+  position: [0.04212, -0.00419, -0.08339]
+  orientation: [-0.349222, -0.163387, 0.867442, 0.314472]
+  standoff: 0.0
+  tools: []
+- name: +M
+  region: scalp
+  position: [-0.113032, 0.002132, -0.15391]
+  orientation: [0.284592, 0.260114, 0.62249, 0.681069]
+  standoff: 0.0
+  tools: []
+- name: +O
+  region: scalp
+  position: [0.112982, 0.002192, -0.15366]
+  orientation: [-0.349222, -0.163387, 0.867442, 0.314472]
+  standoff: 0.0
+  tools: []
+- name: +N
+  region: scalp
+  position: [0.001616, -0.018377, -0.201109]
+  orientation: [-0.027895, -0.008689, -0.000242, 0.999573]
+  standoff: 0.0
+  tools: []

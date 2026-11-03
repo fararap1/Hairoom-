@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <!-- HAIROOM temporary tool (2026-07-21): a plain cylinder, real URDF link
+         so MoveIt collision-checks it, rigidly fixed to wrist3_link along its
+         verified +Z axis — confirmed (not assumed) from joint j6's
+         axis="0 0 1" in fairino5_v6.urdf (the last joint spins about the
+         flange/tool direction, standard industrial-arm convention) and from
+         wrist3_link's own mesh geometry, which spans Z=[0.053, 0.099] in its
+         local frame (entirely positive — the solid body sits ahead of the
+         link origin along +Z, i.e. +Z points out toward the flange face).
+
+         TOOL_LENGTH_M / TOOL_RADIUS_M are placeholders pending a real
+         measurement — every consumer below (cylinder geometry, its centering
+         offset, and the tcp_tool tip joint) reads from these two properties;
+         nothing else needs editing to retune.
+
+         2026-07-21: tool_link's own origin still coincides with wrist3_link
+         (z=0), but the cylinder body itself is now offset by FLANGE_FACE_Z —
+         the outer face of wrist3_link's own housing mesh, which spans
+         Z=[0.0532, 0.0990] in this same frame. Mounting the cylinder flush
+         at z=0 buried its near half inside that housing mesh, so only ~10cm
+         of a 20cm cylinder was ever visible in RViz — correct model, but the
+         visible cylinder looked half-length. The cylinder now spans
+         FLANGE_FACE_Z .. FLANGE_FACE_Z+TOOL_LENGTH_M, fully clear of the
+         housing; tcp_tool moves out to match. -->
+    <!-- 2026-07-24: changed 0.20 -> 0.10 at the operator's request ("тул не
+         20см, поменяем на 10см"). This moves tcp_tool 100 mm back toward the
+         flange, so every taught landmark / approach pose computed for the
+         200 mm tool is now short by 100 mm and must be re-taught; reachability
+         changes too.
+         2026-10-31: back to 0.20 — the operator fitted a NEW tool and measured
+         it at 20 cm ("у меня кончике руки новый тул и он 20см"). tcp_tool moves
+         100 mm back OUT along +Z, so anything derived from the 100 mm tip is
+         now wrong by that 100 mm: in particular the head fit
+         (HEAD_FIT_OFFSET_M in hairoom_scene.py) was computed from the taught
+         C pose's tip and must be recomputed after this change. -->
+    <xacro:property name="TOOL_LENGTH_M" value="0.20"/>
+    <!-- 2026-07-22: real tool measured — 10 mm diameter tip, cylindrical.
+         Radius 0.005 m (was 0.02 placeholder). Length was 200 mm then, set to
+         100 mm on 2026-07-24 (see TOOL_LENGTH_M note above). -->
+    <xacro:property name="TOOL_RADIUS_M" value="0.005"/>
+    <xacro:property name="FLANGE_FACE_Z" value="0.099"/>
+
+    <joint name="tool_joint" type="fixed">
+        <parent link="wrist3_link"/>
+        <child link="tool_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+    <link name="tool_link">
+        <visual>
+            <origin xyz="0 0 ${FLANGE_FACE_Z + TOOL_LENGTH_M/2}" rpy="0 0 0"/>
+            <geometry>
+                <cylinder length="${TOOL_LENGTH_M}" radius="${TOOL_RADIUS_M}"/>
+            </geometry>
+            <material name="hairoom_tool_gray">
+                <color rgba="0.3 0.3 0.3 1"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 ${FLANGE_FACE_Z + TOOL_LENGTH_M/2}" rpy="0 0 0"/>
+            <geometry>
+                <cylinder length="${TOOL_LENGTH_M}" radius="${TOOL_RADIUS_M}"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <!-- Negligible placeholder — real tool mass/inertia unknown yet.
+                 Doesn't affect ros2_control (position-interface only) or
+                 OMPL (kinematic, not dynamics-based) planning. -->
+            <origin xyz="0 0 ${FLANGE_FACE_Z + TOOL_LENGTH_M/2}" rpy="0 0 0"/>
+            <mass value="0.05"/>
+            <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+        </inertial>
+    </link>
+
+    <joint name="tcp_tool_joint" type="fixed">
+        <parent link="tool_link"/>
+        <child link="tcp_tool"/>
+        <origin xyz="0 0 ${FLANGE_FACE_Z + TOOL_LENGTH_M}" rpy="0 0 0"/>
+    </joint>
+    <link name="tcp_tool"/>
+</robot>

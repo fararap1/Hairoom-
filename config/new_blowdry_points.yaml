@@ -1,0 +1,44 @@
+frame_id: head_link
+note: new blowdry points = +C +H +K +G +I shifted +0.10 m along head_link X (right).
+  RViz/reference only, poses not taught.
+landmarks:
+- name: +CL
+  region: scalp
+  source: +C
+  shift_x: 0.1
+  position: [0.09998, -0.12772, 0.17069]
+  orientation: [0.000144, 0.989223, 0.146413, -0.000974]
+  standoff: 0.0
+  tools: []
+- name: +HL
+  region: scalp
+  source: +H
+  shift_x: 0.1
+  position: [0.09884, -0.246619, 0.056233]
+  orientation: [0.00453, 0.826404, 0.563051, 0.003086]
+  standoff: 0.0
+  tools: []
+- name: +KL
+  region: scalp
+  source: +K
+  shift_x: 0.1
+  position: [0.098876, -0.233279, -0.112426]
+  orientation: [-0.18254, 0.447437, 0.807044, 0.339351]
+  standoff: 0.0
+  tools: []
+- name: +GL
+  region: scalp
+  source: +G
+  shift_x: 0.1
+  position: [-0.04572, -0.16779, -0.00478]
+  orientation: [0.394524, 0.636143, 0.563507, 0.349476]
+  standoff: 0.0
+  tools: []
+- name: +IL
+  region: scalp
+  source: +I
+  shift_x: 0.1
+  position: [0.260657, -0.160669, 0.006335]
+  orientation: [-0.636143, -0.394524, 0.349476, 0.563507]
+  standoff: 0.0
+  tools: []

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Fast DDS participant profile for the Hairoom stack.
+
+  WHY: Fast DDS's shared-memory (SHM) transport intermittently stalls action
+  goal-RESPONSE delivery on localhost. move_group then logs
+
+      Failed to send goal response ... (timeout): client will not receive response
+
+  and the FIRST /execute appears to hang (the controller never even receives the
+  trajectory); a retry succeeds. We hit this repeatedly running loops.
+
+  FIX: make the default participant use UDPv4 ONLY (disable the builtin SHM +
+  UDP set) with larger socket buffers. All Hairoom ROS traffic is small
+  localhost messages, so UDP loopback is plenty and there is no SHM segment to
+  stall on. Wired in by bin/start_hairoom.sh via FASTRTPS_DEFAULT_PROFILES_FILE.
+-->
+<dds xmlns="http://www.eprosima.com/XMLSchemas/fastRTPS_Profiles">
+  <profiles>
+    <transport_descriptors>
+      <transport_descriptor>
+        <transport_id>udp_only</transport_id>
+        <type>UDPv4</type>
+        <sendBufferSize>4194304</sendBufferSize>
+        <receiveBufferSize>4194304</receiveBufferSize>
+      </transport_descriptor>
+    </transport_descriptors>
+
+    <participant profile_name="hairoom_participant" is_default_profile="true">
+      <rtps>
+        <userTransports>
+          <transport_id>udp_only</transport_id>
+        </userTransports>
+        <!-- do NOT add the builtin SHM/UDP transports on top -->
+        <useBuiltinTransports>false</useBuiltinTransports>
+      </rtps>
+    </participant>
+  </profiles>
+</dds>
